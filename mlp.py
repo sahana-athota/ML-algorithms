@@ -22,9 +22,12 @@ def binary_cross_entropy(y_true,y_pred):
     # y * log(p) + (1 - y) * log(1 - p)
     pass
 
-def binary_cross_entropy_derivative(y_true, y_pred):
-    pass
+def binary_cross_entropy_derivative(y_true, y_pred_prob):
+    return -(y_true / y_pred_prob) + ((1 - y_true) / (1 - y_pred_prob))
 
+def sigmoid_derivative(x):
+    s = sigmoid(x)
+    return s*(1-s)
 def forward(X):
     Z1 = np.dot(X,w1)+b1
     A1 = relu(Z1)
@@ -40,3 +43,14 @@ def train(x):
     #epochs
     pass
 
+m=100
+dL_dA2=binary_cross_entropy_derivative(y_true,y_pred_prob)
+dZ2=dL_dA2*sigmoid_derivative(Z2)
+
+dW2 = np.dot(A1.T,dZ2)/m
+db2 = np.sum(dZ2, axis=0, keepdims=True) / m 
+dA1 = np.dot(dZ2, W2.T) 
+dZ1 = dA1*relu_derivative(Z1)
+
+dW1 = np.dot(X.T, dZ1) / m 
+db1 = np.sum(dZ1, axis=0, keepdims=True) / m
